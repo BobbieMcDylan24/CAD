@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GSRP CAD – New Citation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===========================
+       GLOBAL RESET + BASE STYLING
+    =========================== */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0D1117;
+      color: #E0E0E0;
+      overflow: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    button {
+      font-family: inherit;
+    }
+
+    /* ===========================
+       SIDEBAR
+    =========================== */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100%;
+      background-color: #101824;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid #1C2433;
+    }
+    .sidebar .logo {
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sidebar .logo img {
+      width: 36px;
+      height: 36px;
+    }
+    .sidebar .logo h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #FFA500;
+    }
+    .nav {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 20px;
+    }
+    .nav ul {
+      list-style: none;
+    }
+    .nav li {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+      color: #C9D1D9;
+    }
+    .nav li:hover {
+      background-color: #1B2638;
+    }
+    .nav li i {
+      width: 24px;
+      text-align: center;
+      margin-right: 12px;
+      font-style: normal;
+      font-size: 1rem;
+    }
+    .nav li span {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .nav li .badge {
+      background-color: #FF4D4D;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 0 6px;
+      border-radius: 12px;
+    }
+    .nav .submenu {
+      display: none;
+      flex-direction: column;
+    }
+    .nav .submenu li {
+      padding-left: 44px;
+      background-color: #0F192D;
+    }
+
+    .shift-summary {
+      background-color: #FFA500;
+      color: #101824;
+      padding: 16px 20px;
+      margin: 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .shift-summary h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .shift-summary p {
+      margin-bottom: 6px;
+    }
+
+    /* ===========================
+       TOPBAR
+    =========================== */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 260px; /* width of sidebar */
+      right: 0;
+      height: 60px;
+      background-color: #0F1625;
+      border-bottom: 1px solid #1C2433;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 10;
+    }
+    .topbar .left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .topbar .left .logo-small {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar .left .logo-small img {
+      width: 30px;
+      height: 30px;
+    }
+    .topbar .left .logo-small h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #FFA500;
+    }
+    .topbar .left .subtitle {
+      font-size: 0.85rem;
+      color: #A0A0A0;
+    }
+    .topbar .right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .topbar .right i {
+      font-style: normal;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #A0A0A0;
+      transition: color 0.2s;
+    }
+    .topbar .right i:hover {
+      color: #FFFFFF;
+    }
+    .topbar .right .status-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #00FF7F;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .topbar .right .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .topbar .right .user-info .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: #FFA500;
+      color: #101824;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .topbar .right .user-info .details {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .topbar .right .user-info .details span:first-child {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+    .topbar .right .user-info .details span:last-child {
+      font-size: 0.75rem;
+      color: #A0A0A0;
+    }
+
+    /* ===========================
+       MAIN CONTENT WRAPPER
+    =========================== */
+    .main-wrapper {
+      margin-left: 260px;
+      margin-top: 60px; /* height of topbar */
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 60px);
+    }
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px;
+      background-color: #0F192D;
+    }
+
+    /* ===========================
+       FORM CONTAINER
+    =========================== */
+    .form-card {
+      background-color: #161B22;
+      border: 1px solid #30363D;
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .form-card h2 {
+      color: #FFA500;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .flash {
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      font-weight: 500;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .flash.error {
+      background-color: #D72C2C;
+      color: #fff;
+    }
+    .flash.success {
+      background-color: #22B14C;
+      color: #fff;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      color: #8B949E;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: 10px 12px;
+      background-color: #0D1117;
+      border: 1px solid #30363D;
+      border-radius: 6px;
+      color: #E0E0E0;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #FFA500;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .btn-cancel {
+      padding: 8px 16px;
+      background-color: #21262D;
+      border: 1px solid #30363D;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #C9D1D9;
+      transition: background 0.2s;
+    }
+    .btn-cancel:hover {
+      background-color: #2D333B;
+    }
+    .btn-submit {
+      padding: 8px 16px;
+      background-color: #FFA500;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #161B22;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover {
+      background-color: #CC8400;
+    }
+
+    /* ===========================
+       DATALIST STYLING (hidden)
+    =========================== */
+    datalist {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR (same as new_arrest) -->
+  <aside class="sidebar">
+    <div>
+      <div class="logo">
+        <img src="{{ url_for('static', filename='img/3.png') }}" alt="GSRP Logo" />
+        <h1>GSRP CAD System</h1>
+      </div>
+
+      <nav class="nav">
+        <ul>
+          <li onclick="window.location.href='{{ url_for('dashboard.dashboard') }}'">
+            <i>🏠</i><span>Civilian Dashboard</span>
+          </li>
+          <li class="active">
+            <i>👤</i><span>Your Character</span>
+          </li>
+          <li onclick="window.location.href='{{ url_for('view_calls.view_calls') }}'">
+            <i>📞</i><span>Active Calls</span>
+          </li>
+          <li onclick="window.location.href='{{ url_for('arrests_citations.view_arrests_citations') }}'">
+            <i>🚨</i><span>Arrests & Citations</span>
+          </li>
+          <li onclick="window.location.href='{{ url_for('arrests_citations.new_warrant') }}'">
+            <i>🚨</i><span>New Warrant</span>
+          </li>
+          <li onclick="window.location.href='{{ url_for('arrests_citations.new_bolo') }}'">
+            <i>🚨</i><span>New BOLO</span>
+          </li>
+          <li onclick="window.location.href='{{ url_for('leo.database_lookup') }}'">
+            <i>🚨</i><span>Database Lookup</span>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="shift-summary">
+      <h3>Shift Summary</h3>
+      <p><strong>Calls Handled:</strong> {{ shift.calls_handled }}</p>
+      <p><strong>Time on Duty:</strong> {{ shift.time_on_duty }}</p>
+      <p><strong>Status:</strong> {{ shift.status }}</p>
+    </div>
+  </aside>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="left">
+      <div class="logo-small">
+        <img src="{{ url_for('static', filename='img/3.png') }}" alt="GSRP Logo" />
+        <h2>GSRP CAD System</h2>
+      </div>
+      <span class="subtitle">Georgia State Roleplay – LEO Portal</span>
+    </div>
+    <div class="right">
+      <i title="Radio">📡</i>
+      <i title="Notifications">🔔</i>
+      <div class="status-dot" title="Online"></div>
+      <div class="user-info">
+        <div class="avatar">{{ user_initials }}</div>
+        <div class="details">
+          <span>{{ user_name }}</span>
+          <span>{{ user_unit }} | Badge #{{ user_badge }}</span>
+        </div>
+      </div>
+      <i title="Settings">⚙️</i>
+      <i title="Logout">⟶</i>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+    <main class="content">
+      <h1 class="page-title">New Citation</h1>
+      <p class="page-subtitle">Log a new citation into the system</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div class="flash {{ category }}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <div class="form-card">
+        <h2>＋ New Citation</h2>
+        <form method="POST" action="{{ url_for('arrests_citations.new_citation') }}">
+          <!-- CHARACTER NAME SEARCH -->
+          <div class="form-group">
+            <label for="full_name">Citation Issued To</label>
+            <input
+              list="character-list"
+              type="text"
+              id="full_name"
+              name="full_name"
+              placeholder="Search character..."
+              value="{{ full_name|default('', true) }}"
+              required
+            />
+            <datalist id="character-list">
+              <!-- Populated by same JS as new_arrest -->
+            </datalist>
+          </div>
+
+          <!-- DESCRIPTION -->
+          <div class="form-group">
+            <label for="description">Description of Offense</label>
+            <textarea
+              id="description"
+              name="description"
+              placeholder="Enter citation details"
+              required
+            >{{ description|default('', true) }}</textarea>
+          </div>
+
+          <!-- CHARGE (from Google Sheet) -->
+          <div class="form-group">
+            <label for="charge">Charge</label>
+            <input
+              list="charges-list"
+              type="text"
+              id="charge"
+              name="charge"
+              placeholder="Start typing to search charges..."
+              value="{{ charge|default('', true) }}"
+              required
+            />
+            <datalist id="charges-list">
+              <!-- Populated by same JS as new_arrest -->
+            </datalist>
+            <small style="display:block; margin-top:4px; color:#8B949E;">
+              Charges sourced from Google Sheet:
+              <a
+                href="https://docs.google.com/spreadsheets/d/11SpERqZSxVyXJBHBGAvTIi9PbQetIGyZtbtysRdkoXs/edit?gid=0"
+                target="_blank"
+                style="color:#FFA500;"
+                >View charges list</a
+              >.
+            </small>
+          </div>
+
+          <!-- BUTTONS -->
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn-cancel"
+              onclick="window.location.href='{{ url_for('arrests_citations.view_arrests_citations') }}'"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn-submit">Submit Citation</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===========================
+       JAVASCRIPT: Populate Datalists (same as new_arrest)
+  =========================== -->
+  <script>
+    // (1) Character names datalist
+    fetch("{{ url_for('characters.api_character_names') }}")
+      .then(res => res.json())
+      .then(names => {
+        const dl = document.getElementById("character-list");
+        names.forEach(n => {
+          const opt = document.createElement("option");
+          opt.value = n;
+          dl.appendChild(opt);
+        });
+      })
+      .catch(err => console.error("Error fetching character names:", err));
+
+    // (2) Charges datalist from Google Sheet CSV
+    const sheetCsvUrl =
+      "https://docs.google.com/spreadsheets/d/11SpERqZSxVyXJBHBGAvTIi9PbQetIGyZtbtysRdkoXs/export?format=csv&gid=0";
+
+    fetch(sheetCsvUrl)
+      .then(res => res.text())
+      .then(csvText => {
+        const rows = csvText.split("\n");
+        const dlCharges = document.getElementById("charges-list");
+        rows.forEach(line => {
+          const cols = line.split(",");
+          if (cols.length > 0) {
+            const chargeName = cols[0].trim();
+            if (chargeName) {
+              const opt = document.createElement("option");
+              opt.value = chargeName;
+              dlCharges.appendChild(opt);
+            }
+          }
+        });
+      })
+      .catch(err => console.error("Error fetching charges CSV:", err));
+  </script>
+</body>
+</html>
+8hj

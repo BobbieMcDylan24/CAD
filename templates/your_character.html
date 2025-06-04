@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GSRP CAD – Your Character</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===========================
+       GLOBAL RESET + BASE STYLING
+    =========================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0D1117;
+      color: #E0E0E0;
+      overflow: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    button {
+      font-family: inherit;
+    }
+
+    /* ===========================
+       SIDEBAR
+    =========================== */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100%;
+      background-color: #101824;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid #1C2433;
+    }
+    .sidebar .logo {
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sidebar .logo img {
+      width: 36px;
+      height: 36px;
+    }
+    .sidebar .logo h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #FFA500;
+    }
+    .nav {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 20px;
+    }
+    .nav ul {
+      list-style: none;
+    }
+    .nav li {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+      color: #C9D1D9;
+    }
+    .nav li:hover {
+      background-color: #1B2638;
+    }
+    .nav li.active,
+    .nav li.active:hover {
+      background-color: #FFA500;
+      color: #101824;
+    }
+    .nav li i {
+      width: 24px;
+      text-align: center;
+      margin-right: 12px;
+      font-style: normal; /* placeholder for icon */
+      font-size: 1rem;
+    }
+    .nav li span {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .nav li .badge {
+      background-color: #FF4D4D;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 0 6px;
+      border-radius: 12px;
+    }
+    .nav .submenu {
+      display: none;
+      flex-direction: column;
+    }
+    .nav .submenu li {
+      padding-left: 44px;
+      background-color: #0F192D;
+    }
+
+    .shift-summary {
+      background-color: #FFA500;
+      color: #101824;
+      padding: 16px 20px;
+      margin: 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .shift-summary h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .shift-summary p {
+      margin-bottom: 6px;
+    }
+
+    /* ===========================
+       TOPBAR
+    =========================== */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 260px; /* width of sidebar */
+      right: 0;
+      height: 60px;
+      background-color: #0F1625;
+      border-bottom: 1px solid #1C2433;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 10;
+    }
+    .topbar .left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .topbar .left .logo-small {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar .left .logo-small img {
+      width: 30px;
+      height: 30px;
+    }
+    .topbar .left .logo-small h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #FFA500;
+    }
+    .topbar .left .subtitle {
+      font-size: 0.85rem;
+      color: #A0A0A0;
+    }
+    .topbar .right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .topbar .right i {
+      font-style: normal;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #A0A0A0;
+      transition: color 0.2s;
+    }
+    .topbar .right i:hover {
+      color: #FFFFFF;
+    }
+    .topbar .right .status-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #00FF7F;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .topbar .right .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .topbar .right .user-info .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: #FFA500;
+      color: #101824;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .topbar .right .user-info .details {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .topbar .right .user-info .details span:first-child {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+    .topbar .right .user-info .details span:last-child {
+      font-size: 0.75rem;
+      color: #A0A0A0;
+    }
+
+    /* ===========================
+       MAIN CONTENT WRAPPER
+    =========================== */
+    .main-wrapper {
+      margin-left: 260px;
+      margin-top: 60px; /* height of topbar */
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 60px);
+    }
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px;
+      background-color: #0F192D;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #FFFFFF;
+    }
+    .page-subtitle {
+      font-size: 0.95rem;
+      color: #B0B0B0;
+      margin-bottom: 24px;
+    }
+
+
+    .character-card {
+      background-color: #1E2737;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .character-card .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .character-card .card-header .left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .character-card .card-header .left .avatar {
+      width: 60px;
+      height: 60px;
+      background-color: #2A2F45;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #FFA500;
+    }
+    .character-card .card-header .left .info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .character-card .card-header .left .info .name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+    .character-card .card-header .left .info .role-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background-color: #FFA500;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #101824;
+      margin-top: 4px;
+    }
+    .character-card .card-header .right {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: right;
+    }
+    .character-card .card-header .right .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .character-card .card-header .right .info-item .label {
+      font-size: 0.85rem;
+      color: #A0A0A0;
+    }
+    .character-card .card-header .right .info-item .value {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #E0E0E0;
+    }
+    .character-card .card-header .right .status-pill {
+      display: inline-block;
+      padding: 4px 10px;
+      background-color: #22B14C;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #161B22;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div>
+      <div class="logo">
+        <img src="{{ url_for('static', filename='img/3.png') }}" alt="GSRP Logo" />
+        <h1>GSRP CAD System</h1>
+      </div>
+
+      <nav class="nav">
+        <ul>
+          <li onclick="window.location.href='{{ url_for('dashboard.dashboard') }}'">
+            <i>🏠</i><span>Civilian Dashboard</span>
+          </li>
+          <li class="active">
+            <i>👤</i><span>Your Character</span>
+          </li>
+          <li onclick="window.location.href='{{ url_for('view_calls.view_calls') }}'">
+            <i>📞</i><span>Active Calls</span>
+          </li>
+          <li onclick="window.location.href='{{ url_for('arrests_citations.view_arrests_citations') }}'">
+            <i>🚨</i><span>Arrests & Citations</span>
+          </li>
+          <li onclick="window.location.href='{{ url_for('arrests_citations.new_warrant') }}'">
+            <i>🚨</i><span>New Warrant</span>
+          </li>
+          <li onclick="window.location.href='{{ url_for('arrests_citations.new_bolo') }}'">
+            <i>🚨</i><span>New BOLO</span>
+          </li>
+          <li onclick="window.location.href='{{ url_for('leo.database_lookup') }}'">
+            <i>🚨</i><span>Database Lookup</span>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+
+  </aside>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="left">
+      <div class="logo-small">
+        <img src="{{ url_for('static', filename='img/3.png') }}" alt="GSRP Logo" />
+        <h2>GSRP CAD System</h2>
+      </div>
+      <span class="subtitle">Georgia State Roleplay – LEO Portal</span>
+    </div>
+    <div class="right">
+      <div class="status-dot" title="Online"></div>
+    </div>
+  </header>
+
+  <div class="main-wrapper">
+    <main class="content">
+      <h1 class="page-title">Your Character</h1>
+      <p class="page-subtitle">View and manage your LEO character</p>
+
+      <div class="character-card">
+        <div class="card-header">
+          <div class="left">
+            <div class="avatar">
+              {{ character.first_name }} 
+            </div>
+            <div class="info">
+              <div class="name">{{ character.first_name }} {{ character.last_name }}</div>
+              <div class="role-badge">{{ character.rank }}</div>
+            </div>
+          </div>
+          <div class="right">
+            <div class="info-item">
+              <div class="label">Callsign</div>
+              <div class="value">{{ character.callsign }}</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Date of Birth</div>
+              <div class="value">{{ character.date_of_birth }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</body>
+</html>

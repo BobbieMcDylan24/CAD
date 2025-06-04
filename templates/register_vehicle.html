@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GSRP CAD – Register Vehicle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reuse the same base/CSS as above for cohesion */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0D1117;
+      color: #E0E0E0;
+      overflow: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 24px; background-color: #161B22; border-bottom: 1px solid #30363D;
+    }
+    .topbar .logo-section {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .topbar .logo-section img { width: 32px; height: 32px; }
+    .topbar .logo-section .title { font-size: 1.25rem; font-weight: 600; color: #FFA500; }
+    .topbar .logo-section .subtitle { font-size: 0.85rem; color: #8B949E; }
+    .topbar .exit-btn {
+      padding: 6px 12px; background-color: #21262D; border: 1px solid #30363D;
+      border-radius: 4px; font-size: 0.9rem; cursor: pointer; color: #C9D1D9;
+      transition: background 0.2s;
+    }
+    .topbar .exit-btn:hover { background-color: #2D333B; }
+
+    .tabs {
+      display: flex; gap: 8px; padding: 12px 24px;
+      background-color: #161B22; border-bottom: 1px solid #30363D;
+    }
+    .tabs .tab-item {
+      padding: 8px 16px; font-size: 0.95rem; font-weight: 500;
+      border-radius: 6px; cursor: pointer; color: #8B949E;
+      transition: background 0.2s, color 0.2s;
+    }
+    .tabs .tab-item:hover { background-color: #21262D; color: #E0E0E0; }
+    .tabs .tab-item.active { background-color: #FFA500; color: #161B22; }
+
+    .main-content {
+      padding: 24px 24px 36px; overflow-y: auto;
+      height: calc(100% - 106px); background-color: #0D1117;
+    }
+
+    .flash {
+      padding: 12px 16px; margin-bottom: 20px; border-radius: 6px;
+      font-weight: 500; max-width: 600px; margin-left: auto; margin-right: auto;
+    }
+    .flash.error   { background-color: #D72C2C; color: #fff; }
+    .flash.success { background-color: #22B14C; color: #fff; }
+
+    .form-card {
+      background-color: #161B22; border: 1px solid #30363D; border-radius: 8px;
+      padding: 24px; max-width: 600px; margin: 0 auto;
+    }
+    .form-card h2 {
+      color: #FFA500; font-size: 1.2rem; margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex; flex-direction: column; margin-bottom: 16px;
+    }
+    .form-group label {
+      font-size: 0.9rem; margin-bottom: 6px; color: #8B949E;
+    }
+    .form-group input,
+    .form-group select {
+      padding: 10px 12px; background-color: #0D1117; border: 1px solid #30363D;
+      border-radius: 6px; color: #E0E0E0; font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none; border-color: #FFA500;
+    }
+
+    .form-actions {
+      display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;
+    }
+    .btn-cancel {
+      padding: 8px 16px; background-color: #21262D; border: 1px solid #30363D;
+      border-radius: 6px; font-size: 0.9rem; cursor: pointer; color: #C9D1D9;
+      transition: background 0.2s;
+    }
+    .btn-cancel:hover { background-color: #2D333B; }
+    .btn-submit {
+      padding: 8px 16px; background-color: #FFA500; border: none; border-radius: 6px;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer; color: #161B22;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover { background-color: #CC8400; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <div class="topbar">
+    <div class="logo-section">
+      <img src="../static/img/3.png" alt="GSRP Logo" />
+      <div>
+        <div class="title">GSRP CAD</div>
+        <div class="subtitle">Computer Aided Dispatch</div>
+      </div>
+    </div>
+    <button class="exit-btn">⟵ Exit CAD</button>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="tabs">
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('dashboard.dashboard') }}'">
+      View Characters
+    </div>
+
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('create_character.create_character') }}'">
+      Create Character
+    </div>
+
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('character_detail.character_detail', character_id=character_id) }}'">
+      Character Detail
+    </div>
+
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('character_detail.register_weapon', character_id=character_id) }}'">
+      Register Weapon
+    </div>
+
+    <div class="tab-item active"
+         onclick="window.location.href='{{ url_for('character_detail.register_vehicle', character_id=character_id) }}'">
+      Register Vehicle
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="form-card">
+      <h2>＋ Register Vehicle</h2>
+      <form method="POST" action="{{ url_for('character_detail.register_vehicle', character_id=character_id) }}">
+        <div class="form-group">
+          <label for="model">Vehicle Model</label>
+          <input type="text" id="model" name="model"
+                 placeholder="e.g., Ford Explorer"
+                 value="{{ model | default('', true) }}" required />
+        </div>
+        <div class="form-group">
+          <label for="registration">Registration #</label>
+          <input type="text" id="registration" name="registration"
+                 placeholder="e.g., ABC-1234"
+                 value="{{ registration | default('', true) }}" required />
+        </div>
+        <div class="form-group">
+          <label for="color">Color</label>
+          <input type="text" id="color" name="color"
+                 placeholder="e.g., Blue"
+                 value="{{ color | default('', true) }}" required />
+        </div>
+        <div class="form-group">
+          <label for="tax_status">Tax Status</label>
+          <select id="tax_status" name="tax_status" required>
+            <option value="" disabled {% if not tax_status %}selected{% endif %}>Select tax status</option>
+            <option value="Taxed"   {% if tax_status=='Taxed'   %}selected{% endif %}>Taxed</option>
+            <option value="Untaxed" {% if tax_status=='Untaxed' %}selected{% endif %}>Untaxed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="insurance_status">Insurance Status</label>
+          <select id="insurance_status" name="insurance_status" required>
+            <option value="" disabled {% if not insurance_status %}selected{% endif %}>Select insurance status</option>
+            <option value="Valid"   {% if insurance_status=='Valid'   %}selected{% endif %}>Valid</option>
+            <option value="Expired" {% if insurance_status=='Expired' %}selected{% endif %}>Expired</option>
+            <option value="None"    {% if insurance_status=='None'    %}selected{% endif %}>None</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="stolen">Stolen</label>
+          <select id="stolen" name="stolen" required>
+            <option value="" disabled {% if not stolen %}selected{% endif %}>Select</option>
+            <option value="No"  {% if stolen=='No'  %}selected{% endif %}>No</option>
+            <option value="Yes" {% if stolen=='Yes' %}selected{% endif %}>Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="registered_on">Registered On</label>
+          <input type="date" id="registered_on" name="registered_on"
+                 value="{{ registered_on | default('', true) }}" required />
+        </div>
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select id="status" name="status" required>
+            <option value="" disabled {% if not status %}selected{% endif %}>Select status</option>
+            <option value="REGISTERED" {% if status=='REGISTERED' %}selected{% endif %}>Registered</option>
+            <option value="EXPIRED"    {% if status=='EXPIRED'    %}selected{% endif %}>Expired</option>
+            <option value="NONE"       {% if status=='NONE'       %}selected{% endif %}>None</option>
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel"
+                  onclick="window.location.href='{{ url_for('character_detail.character_detail', character_id=character_id) }}'">
+            Cancel
+          </button>
+          <button type="submit" class="btn-submit">Register Vehicle</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

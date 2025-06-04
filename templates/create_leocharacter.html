@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GSRP CAD – Create LEO Character</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Base resets */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0F1625;
+      color: #E0E0E0;
+      overflow: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100%;
+      background-color: #101824;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid #1C2433;
+    }
+
+    .sidebar .logo {
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sidebar .logo img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .sidebar .logo h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #FFA500;
+    }
+
+    .nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 0 20px;
+    }
+
+    .nav ul {
+      list-style: none;
+    }
+
+    .nav li {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .nav li:hover {
+      background-color: #1B2638;
+    }
+
+    .nav li.active,
+    .nav li.active:hover {
+      background-color: #FFA500;
+      color: #101824;
+    }
+
+    .nav li i {
+      width: 20px;
+      text-align: center;
+      margin-right: 12px;
+      font-style: normal; /* Placeholder for icon fonts */
+    }
+
+    .nav li span {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .nav li .badge {
+      background-color: #FF4D4D;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 0 6px;
+      border-radius: 12px;
+    }
+
+    .nav .submenu {
+      display: none;
+      flex-direction: column;
+    }
+
+    .nav .submenu li {
+      padding-left: 44px;
+      background-color: #0F192D;
+    }
+
+    .nav li.expandable::after {
+      content: "▶";
+      font-size: 0.7rem;
+      margin-left: 8px;
+      transform: rotate(0deg);
+      transition: transform 0.2s;
+    }
+
+    .nav li.expandable.expanded::after {
+      transform: rotate(90deg);
+    }
+
+    /* Shift Summary Box */
+    .shift-summary {
+      background-color: #FFA500;
+      color: #101824;
+      padding: 16px 20px;
+      margin: 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .shift-summary h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .shift-summary p {
+      margin-bottom: 6px;
+    }
+
+    /* Main wrapper (header + content) */
+    .main-wrapper {
+      margin-left: 260px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    /* Header */
+    .header {
+      height: 60px;
+      background-color: #0F1625;
+      border-bottom: 1px solid #1C2433;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .header .left,
+    .header .right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header .left .logo-small {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header .left .logo-small img {
+      width: 28px;
+      height: 28px;
+    }
+
+    .header .left .logo-small h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #FFA500;
+    }
+
+    .header .left .subtitle {
+      font-size: 0.85rem;
+      color: #A0A0A0;
+    }
+
+    .header .right i {
+      font-style: normal;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #A0A0A0;
+      transition: color 0.2s;
+    }
+
+    .header .right i:hover {
+      color: #FFFFFF;
+    }
+
+    .header .right .status-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #00FF7F;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .header .right .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .header .right .user-info .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: #FFA500;
+      color: #101824;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .header .right .user-info .details {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .header .right .user-info .details span:first-child {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+
+    .header .right .user-info .details span:last-child {
+      font-size: 0.75rem;
+      color: #A0A0A0;
+    }
+
+    /* Main Content */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px;
+      background-color: #0F192D;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #FFFFFF;
+    }
+
+    .page-subtitle {
+      font-size: 0.95rem;
+      color: #B0B0B0;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background-color: #1E2737;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #FFA500;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      color: #CCCCCC;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 10px 12px;
+      background-color: #0F1625;
+      border: 1px solid #1C2433;
+      border-radius: 6px;
+      color: #E0E0E0;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #FFA500;
+    }
+
+    .submit-btn {
+      margin-top: 24px;
+      width: 100%;
+      padding: 14px;
+      background-color: #FFA500;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #101824;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .submit-btn:hover {
+      background-color: #cc8400;
+    }
+
+    /* Scrollbar styling */
+    .nav::-webkit-scrollbar,
+    .content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .nav::-webkit-scrollbar-thumb,
+    .content::-webkit-scrollbar-thumb {
+      background-color: #2E3A4F;
+      border-radius: 3px;
+    }
+
+    .nav::-webkit-scrollbar-track,
+    .content::-webkit-scrollbar-track {
+      background-color: #101824;
+    }
+    .flash {
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-weight: 500;
+      width: 100%;
+      max-width: 600px;
+    }
+    .flash.success {
+      background-color: #22B14C;
+      color: #fff;
+    }
+    .flash.error {
+      background-color: #D72C2C;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div>
+      <div class="logo">
+        <img src="../static/img/3.png" alt="GSRP Logo" />
+        <h1>GSRP LEO Dashboard</h1>
+      </div>
+
+      <nav class="nav">
+        <ul>
+          <li>
+            <i>🏠</i><span>Civilian Dashboard</span>
+          </li>
+          <li>
+            <i>👤</i><span>Your Character</span>
+          </li>
+            <li class="active">
+              <i>👮</i><span>Create LEO Character</span>
+            </li>
+          </ul>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-wrapper">
+    <!-- Header -->
+    <header class="header">
+      <div class="left">
+        <div class="logo-small">
+          <img src="../static/img/3.png" alt="Logo" />
+          <h2>GSRP CAD System</h2>
+        </div>
+        <span class="subtitle">Georgia State Roleplay - LEO Portal</span>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="content">
+      <h1 class="page-title">Create LEO Character</h1>
+      <p class="page-subtitle">Create a new Law Enforcement Officer character</p>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+      <div class="card">
+        <h3>Character Information</h3>
+        <form
+            method="POST"
+            action="{{ url_for('leocharacter.create_leo') }}"
+          >
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input type="text" id="firstName" name="firstName" placeholder="Enter first name" />
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input type="text" id="lastName" name="lastName" placeholder="Enter last name" />
+            </div>
+            <div class="form-group">
+              <label for="rank">Rank</label>
+              <select id="rank" name="rank">
+                <option value="" disabled selected>Select rank</option>
+                <option>Trooper</option>
+                <option>Sergeant</option>
+                <option>Lieutenant</option>
+                <option>Captain</option>
+                <option>Major</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="callsign">Callsign</label>
+              <input type="text" id="callsign" name="callsign" placeholder="e.g., T-247, N-123" />
+            </div>
+            <div class="form-group">
+              <label for="dob">Date of Birth</label>
+              <input type="date" id="dob" name="dob" />
+            </div>
+          </div>
+          <button type="submit" class="submit-btn">Create LEO Character</button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GSRP CAD – Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* (Same CSS as before) */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: 'Montserrat', sans-serif;
+      background-color: #0D1117; color: #E0E0E0; overflow: hidden; }
+    a { text-decoration: none; color: inherit; }
+
+    .topbar { display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 24px; background-color: #161B22; border-bottom: 1px solid #30363D; }
+    .topbar .logo-section { display: flex; align-items: center; gap: 12px; }
+    .topbar .logo-section img { width: 32px; height: 32px; }
+    .topbar .logo-section .title { font-size: 1.25rem; font-weight: 600; color: #FFA500; }
+    .topbar .logo-section .subtitle { font-size: 0.85rem; color: #8B949E; }
+    .topbar .exit-btn { padding: 6px 12px; background-color: #21262D; border: 1px solid #30363D;
+      border-radius: 4px; font-size: 0.9rem; cursor: pointer; color: #C9D1D9; transition: background 0.2s; }
+    .topbar .exit-btn:hover { background-color: #2D333B; }
+
+    .tabs { display: flex; gap: 8px; padding: 12px 24px; background-color: #161B22;
+      border-bottom: 1px solid #30363D; }
+    .tabs .tab-item { padding: 8px 16px; font-size: 0.95rem; font-weight: 500;
+      border-radius: 6px; cursor: pointer; color: #8B949E; transition: background 0.2s, color 0.2s; }
+    .tabs .tab-item:hover { background-color: #21262D; color: #E0E0E0; }
+    .tabs .tab-item.active { background-color: #FFA500; color: #161B22; }
+
+    .main-content { padding: 24px 24px 36px; overflow-y: auto;
+      height: calc(100% - 106px); background-color: #0D1117; }
+
+    .card { background-color: #161B22; border: 1px solid #30363D; border-radius: 8px;
+      padding: 24px; max-width: 1000px; margin: 0 auto; }
+    .card-header { display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px; }
+    .card-header .title { display: flex; align-items: center; gap: 8px; color: #FFA500;
+      font-size: 1.15rem; font-weight: 600; }
+    .card-header .title i { font-size: 1.2rem; line-height: 1; }
+    .card-header .controls { display: flex; gap: 16px; align-items: center; }
+    .controls .search-input { padding: 8px 12px; background-color: #0D1117;
+      border: 1px solid #30363D; border-radius: 6px; color: #E0E0E0;
+      width: 240px; font-size: 0.95rem; transition: border-color 0.2s; }
+    .controls .search-input:focus { outline: none; border-color: #FFA500; }
+    .controls .btn-new { padding: 8px 16px; background-color: #FFA500; border: none;
+      border-radius: 6px; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      color: #161B22; transition: background 0.2s; }
+    .controls .btn-new:hover { background-color: #CC8400; }
+
+    .character-list { display: flex; flex-direction: column; gap: 12px; }
+    .character-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; background-color: #0D1117; border: 1px solid #21262D;
+      border-radius: 6px; transition: background 0.2s, border-color 0.2s;
+    }
+    .character-item:hover { background-color: #161B22; border-color: #30363D; }
+    .character-left { display: flex; align-items: center; gap: 16px; }
+    .character-left .avatar {
+      width: 40px; height: 40px; background-color: #FFA500; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; color: #161B22;
+      font-size: 1.2rem;
+    }
+    .character-left .info { display: flex; flex-direction: column; gap: 4px; }
+    .character-left .info .name {
+      font-size: 1rem; font-weight: 600; color: #E0E0E0;
+    }
+    .character-left .info .rank-badge {
+      display: inline-block; padding: 2px 8px; background-color: #2080FF;
+      border-radius: 6px; font-size: 0.75rem; font-weight: 500; color: #FFFFFF;
+    }
+
+    .character-right { display: flex; align-items: center; gap: 16px; }
+    .character-right .status-pill {
+      display: inline-block; padding: 4px 10px; background-color: #22B14C;
+      border-radius: 6px; font-size: 0.75rem; font-weight: 600; color: #161B22;
+    }
+    .character-right .counts {
+      font-size: 0.85rem; color: #8B949E;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <div class="topbar">
+    <div class="logo-section">
+      <img src="../static/img/3.png" alt="GSRP Logo" />
+      <div>
+        <div class="title">GSRP CAD</div>
+        <div class="subtitle">Computer Aided Dispatch</div>
+      </div>
+    </div>
+    <button class="exit-btn">⟵ Exit CAD</button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab-item active"
+         onclick="window.location.href='{{ url_for('dashboard.dashboard') }}'">
+      View Characters
+    </div>
+
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('create_character.create_character') }}'">
+      Create Character
+    </div>
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('yourcharacter.your_character') }}'">
+      LEO Dashboard
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="card">
+      <div class="card-header">
+        <div class="title">
+          <i>👤</i>
+          <span>Characters Database</span>
+        </div>
+        <div class="controls">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Search characters..."
+            onkeyup="filterCharacters(this.value)"
+          />
+          <button
+            class="btn-new"
+            onclick="window.location.href='{{ url_for('create_character.create_character') }}'"
+          >
+            ＋ New Character
+          </button>
+        </div>
+      </div>
+
+      <div class="character-list" id="characterList">
+        {% for char in characters %}
+          <a
+            href="{{ url_for('character_detail.character_detail', character_id=char._id) }}"
+            style="text-decoration: none;"
+          >
+            <div class="character-item">
+              <div class="character-left">
+                <div class="avatar">
+                  {{ char.first_name[0] if char.first_name else "?" }}
+                </div>
+                <div class="info">
+                  <div class="name">{{ char.first_name }} {{ char.last_name }}</div>
+                  <div class="rank-badge">{{ char.rank }}</div>
+                </div>
+              </div>
+              <div class="character-right">
+                <div class="status-pill">{{ char.status }}</div>
+                <div class="counts">
+                  {{ char.weapons_count }} weapons • {{ char.vehicles_count }} vehicles
+                </div>
+              </div>
+            </div>
+          </a>
+        {% else %}
+          <div style="padding: 16px; color: #8B949E;">
+            No characters found.
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function filterCharacters(query) {
+      const q = query.toLowerCase();
+      const items = document.querySelectorAll('.character-item');
+      items.forEach(item => {
+        const name = item.querySelector('.name').innerText.toLowerCase();
+        item.style.display = name.includes(q) ? 'flex' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

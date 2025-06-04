@@ -1,0 +1,320 @@
+{# templates/database_lookup.html #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GSRP CAD – Database Lookup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0D1117;
+      color: #E0E0E0;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #FFA500;
+    }
+
+    form.search-form {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .search-form input {
+      flex: 1;
+      padding: 10px;
+      background-color: #161B22;
+      border: 1px solid #30363D;
+      color: #E0E0E0;
+      font-size: 1rem;
+      border-radius: 6px;
+      transition: border-color 0.2s;
+    }
+    .search-form input:focus {
+      border-color: #FFA500;
+      outline: none;
+    }
+    .search-form button {
+      background-color: #FFA500;
+      border: none;
+      color: #161B22;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .search-form button:hover {
+      background-color: #CC8400;
+    }
+
+    .character-card {
+      background-color: #161B22;
+      border: 1px solid #30363D;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .character-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .character-header h2 {
+      font-size: 1.5rem;
+      color: #FFA500;
+      font-weight: 600;
+    }
+    .character-header .occupation {
+      background-color: #2080FF;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .licenses-section, .vehicles-section, .weapons-section, .arrests-section {
+      margin-bottom: 32px;
+    }
+    .licenses-section h3,
+    .vehicles-section h3,
+    .weapons-section h3,
+    .arrests-section h3 {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+      color: #E0E0E0;
+    }
+
+    /* Licenses */
+    .licenses-section form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .licenses-section .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .licenses-section label {
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .licenses-section select {
+      padding: 8px 10px;
+      background-color: #0D1117;
+      border: 1px solid #30363D;
+      color: #E0E0E0;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    .licenses-section select:focus {
+      outline: none;
+      border-color: #FFA500;
+    }
+    .licenses-section button {
+      grid-column: span 2;
+      background-color: #22B14C;
+      border: none;
+      color: #161B22;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 12px;
+    }
+    .licenses-section button:hover {
+      background-color: #1B8A42;
+    }
+
+    /* Vehicles & Weapons */
+    .vehicles-list, .weapons-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .vehicle-item, .weapon-item {
+      background-color: #161B22;
+      border: 1px solid #30363D;
+      border-radius: 6px;
+      padding: 16px;
+    }
+    .vehicle-item p, .weapon-item p {
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+    }
+    .vehicle-item p span.label, .weapon-item p span.label {
+      font-weight: 600;
+      color: #AAAAAA;
+    }
+    .vehicle-item p span.value, .weapon-item p span.value {
+      color: #E0E0E0;
+    }
+
+    /* Arrests Section */
+    .arrests-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .arrest-item {
+      background-color: #161B22;
+      border: 1px solid #30363D;
+      border-radius: 6px;
+      padding: 16px;
+    }
+    .arrest-item p {
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+    }
+    .arrest-item p span.label {
+      font-weight: 600;
+      color: #AAAAAA;
+    }
+    .arrest-item p span.value {
+      color: #E0E0E0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Database Lookup</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div style="
+            margin-bottom: 16px;
+            padding: 12px;
+            border-radius: 6px;
+            color: white;
+            background-color: {% if category=='error' %}#D72C2C{% else %}#22B14C{% endif %};
+          ">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form class="search-form" method="POST" action="{{ url_for('leo.database_lookup') }}">
+      <input type="text" name="first_name" placeholder="First Name" required
+             value="{{ request.form.first_name or '' }}"/>
+      <input type="text" name="last_name" placeholder="Last Name" required
+             value="{{ request.form.last_name or '' }}"/>
+      <button type="submit">Search</button>
+    </form>
+
+    {% if searched and character %}
+      <div class="character-card">
+        <div class="character-header">
+          <h2>{{ character.first_name }} {{ character.last_name }}</h2>
+          <div class="occupation">{{ character.occupation or "Unemployed" }}</div>
+        </div>
+
+        <!-- Licenses Section -->
+        <div class="licenses-section">
+          <h3>Licenses</h3>
+          <form method="POST"
+                action="{{ url_for('leo.update_licenses', character_id=character._id) }}?first_name={{ request.form.first_name }}&last_name={{ request.form.last_name }}">
+            {% for lic in ['drivers','pilots','boats','fishing','firearms'] %}
+              <div class="form-group">
+                <label>{{ lic.capitalize() }} License</label>
+                <select name="{{ lic }}">
+                  <option value="None"    {% if licenses[lic]=='None'    %}selected{% endif %}>None</option>
+                  <option value="Valid"   {% if licenses[lic]=='Valid'   %}selected{% endif %}>Valid</option>
+                  <option value="Expired" {% if licenses[lic]=='Expired' %}selected{% endif %}>Expired</option>
+                  <option value="Revoked" {% if licenses[lic]=='Revoked' %}selected{% endif %}>Revoked</option>
+                </select>
+              </div>
+            {% endfor %}
+            <button type="submit">Update Licenses</button>
+          </form>
+        </div>
+
+        <!-- Vehicles Section -->
+        <div class="vehicles-section">
+          <h3>Registered Vehicles</h3>
+          {% if vehicles|length == 0 %}
+            <p style="color:#8B949E;">No vehicles registered.</p>
+          {% else %}
+            <div class="vehicles-list">
+              {% for v in vehicles %}
+                <div class="vehicle-item">
+                  <p><span class="label">Model:</span> <span class="value">{{ v.model }}</span></p>
+                  <p><span class="label">Registration:</span> <span class="value">{{ v.registration }}</span></p>
+                  <p><span class="label">Colour:</span> <span class="value">{{ v.color }}</span></p>
+                  <p><span class="label">Tax Status:</span> <span class="value">{{ v.tax_status }}</span></p>
+                  <p><span class="label">Insurance:</span> <span class="value">{{ v.insurance_status }}</span></p>
+                  <p><span class="label">Stolen:</span> <span class="value">{{ v.stolen }}</span></p>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Weapons Section -->
+        <div class="weapons-section">
+          <h3>Registered Weapons</h3>
+          {% if weapons|length == 0 %}
+            <p style="color:#8B949E;">No weapons registered.</p>
+          {% else %}
+            <div class="weapons-list">
+              {% for w in weapons %}
+                <div class="weapon-item">
+                  <p><span class="label">Model:</span> <span class="value">{{ w.model }}</span></p>
+                  <p><span class="label">Serial #:</span> <span class="value">{{ w.serial }}</span></p>
+                  <p><span class="label">Colour:</span> <span class="value">{{ w.color }}</span></p>
+                  {% if w.mods %}
+                    <p><span class="label">Modifications:</span> <span class="value">{{ w.mods }}</span></p>
+                  {% endif %}
+                  <p><span class="label">Stolen:</span> <span class="value">{{ w.stolen }}</span></p>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Arrests Section (New) -->
+        <div class="arrests-section">
+          <h3>Arrest Records</h3>
+          {% if arrests|length == 0 %}
+            <p style="color:#8B949E;">No arrests on record for this character.</p>
+          {% else %}
+            <div class="arrests-list">
+              {% for a in arrests %}
+                <div class="arrest-item">
+                  <p><span class="label">Date:</span> <span class="value">{{ a.date }}</span></p>
+                  <p><span class="label">Charge:</span> <span class="value">{{ a.charge }}</span></p>
+                  <p><span class="label">Officer:</span> <span class="value">{{ a.officer }}</span></p>
+                  <p><span class="label">Description:</span> <span class="value">{{ a.description }}</span></p>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

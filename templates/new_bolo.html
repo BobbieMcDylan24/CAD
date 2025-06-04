@@ -1,0 +1,147 @@
+{# templates/new_bolo.html #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create BOLO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0D1117;
+      color: #E0E0E0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 16px;
+      color: #FFA500;
+    }
+    .flash-error {
+      background-color: #D72C2C;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      color: white;
+    }
+    .flash-success {
+      background-color: #22B14C;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      color: white;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    label {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    select, input[type="text"], textarea {
+      padding: 10px;
+      background-color: #161B22;
+      border: 1px solid #30363D;
+      color: #E0E0E0;
+      font-size: 1rem;
+      border-radius: 6px;
+      transition: border-color 0.2s;
+    }
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: #FFA500;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    button {
+      background-color: #22B14C;
+      border: none;
+      color: #161B22;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 12px;
+    }
+    button:hover {
+      background-color: #1B8A42;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Create BOLO</h1>
+
+    {# Flash messages #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-{{ 'error' if category=='error' else 'success' }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('arrests_citations.new_bolo') }}">
+      <label for="full_name">Suspect Name</label>
+      <input
+        type="text"
+        id="full_name"
+        name="full_name"
+        placeholder="Type to search..."
+        list="charList"
+        autocomplete="off"
+        required
+        value="{{ full_name }}"
+      />
+      <datalist id="charList">
+        {% for name in character_names %}
+          <option value="{{ name }}"></option>
+        {% endfor %}
+      </datalist>
+
+      <label for="category">Category</label>
+      <select id="category" name="category" required>
+        <option value="" disabled {% if not category %}selected{% endif %}>-- Select Category --</option>
+        {% for cat in bolo_categories %}
+          <option value="{{ cat }}" {% if cat == category %}selected{% endif %}>{{ cat }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="last_seen_location">Last Seen Location</label>
+      <input
+        type="text"
+        id="last_seen_location"
+        name="last_seen_location"
+        placeholder="e.g., 123 Main St."
+        required
+        value="{{ last_seen_location }}"
+      />
+
+      <label for="description">Description / Details</label>
+      <textarea
+        name="description"
+        id="description"
+        placeholder="Include known vehicles, distinguishing marks…"
+        required
+      >{{ description }}</textarea>
+
+      <button type="submit">Submit BOLO</button>
+    </form>
+  </div>
+</body>
+</html>

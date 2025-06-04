@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GSRP CAD – Active 911 Calls</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---- Global Resets ---- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0D1117;
+      color: #E0E0E0;
+      overflow: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    /* ---- Top Navbar ---- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background-color: #161B22;
+      border-bottom: 1px solid #30363D;
+    }
+    .topbar .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .topbar .logo-section img {
+      width: 32px;
+      height: 32px;
+    }
+    .topbar .logo-section .title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #FFA500;
+    }
+    .topbar .logo-section .subtitle {
+      font-size: 0.85rem;
+      color: #8B949E;
+    }
+    .topbar .exit-btn {
+      padding: 6px 12px;
+      background-color: #21262D;
+      border: 1px solid #30363D;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #C9D1D9;
+      transition: background 0.2s;
+    }
+    .topbar .exit-btn:hover {
+      background-color: #2D333B;
+    }
+
+    /* ---- Tab Navigation ---- */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 12px 24px;
+      background-color: #161B22;
+      border-bottom: 1px solid #30363D;
+    }
+    .tabs .tab-item {
+      padding: 8px 16px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #8B949E;
+      transition: background 0.2s, color 0.2s;
+    }
+    .tabs .tab-item:hover {
+      background-color: #21262D;
+      color: #E0E0E0;
+    }
+    .tabs .tab-item.active {
+      background-color: #FFA500;
+      color: #161B22;
+    }
+
+    /* ---- Main Content ---- */
+    .main-content {
+      padding: 24px 24px 36px;
+      overflow-y: auto;
+      height: calc(100% - 106px); /* topbar (48px) + tabs (58px) */
+      background-color: #0D1117;
+    }
+
+    /* ---- Flash Messages ---- */
+    .flash {
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      font-weight: 500;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .flash.error {
+      background-color: #D72C2C;
+      color: #fff;
+    }
+    .flash.success {
+      background-color: #22B14C;
+      color: #fff;
+    }
+
+    /* ---- Card Container ---- */
+    .card {
+      background-color: #161B22;
+      border: 1px solid #30363D;
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 1000px;
+      margin: 0 auto 24px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .card-header .title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #FFA500;
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+    .card-header .title i {
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .card-header .controls {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    /* ---- Call List ---- */
+    .call-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .call-item {
+      background-color: #0D1117;
+      border: 1px solid #21262D;
+      border-radius: 6px;
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .call-item:hover {
+      background-color: #161B22;
+      border-color: #30363D;
+    }
+
+    .call-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1 1 60%;
+    }
+    .call-info .label {
+      font-size: 0.9rem;
+      color: #A0A0A0;
+    }
+    .call-info .value {
+      font-weight: 500;
+      color: #E0E0E0;
+    }
+    .call-extra {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-end;
+    }
+    .call-extra .btn-claim,
+    .call-extra .btn-delete {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 120px;
+      text-align: center;
+    }
+    .btn-claim {
+      background-color: #22B14C;
+      color: #161B22;
+    }
+    .btn-claim:hover {
+      background-color: #1f9f44;
+    }
+    .btn-delete {
+      background-color: #D72C2C;
+      color: #fff;
+    }
+    .btn-delete:hover {
+      background-color: #b32726;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <div class="topbar">
+    <div class="logo-section">
+      <img src="../static/img/3.png" alt="GSRP Logo" />
+      <div>
+        <div class="title">GSRP CAD</div>
+        <div class="subtitle">Computer Aided Dispatch</div>
+      </div>
+    </div>
+    <button class="exit-btn">⟵ Exit CAD</button>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="tabs">
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('yourcharacter.your_character') }}'">
+      LEO Character
+    </div>
+    <div class="tab-item active">
+      Active Calls
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Card Container -->
+    <div class="card">
+      <div class="card-header">
+        <div class="title">
+          <i>📞</i><span>Active 911 Calls</span>
+        </div>
+      </div>
+
+      <div class="call-list">
+        {% if calls %}
+          {% for call in calls %}
+            <div class="call-item">
+              <div class="call-info">
+                <div class="label">Title</div>
+                <div class="value">{{ call.title }}</div>
+
+                <div class="label">Description</div>
+                <div class="value">{{ call.description }}</div>
+
+                <div class="label">Postal</div>
+                <div class="value">{{ call.postal }}</div>
+
+                <div class="label">Type</div>
+                <div class="value">{{ call.call_type }}</div>
+
+                <div class="label">Created At</div>
+                <div class="value">{{ call.created_at }}</div>
+              </div>
+
+              <div class="call-extra">
+                <!-- Claim button -->
+                <form
+                  method="POST"
+                  action="{{ url_for('view_calls.claim_call', call_id=call._id) }}"
+                >
+                  <button type="submit" class="btn-claim">
+                    Claim Call
+                  </button>
+                </form>
+
+                <!-- Delete button -->
+                <form
+                  method="POST"
+                  action="{{ url_for('view_calls.delete_call', call_id=call._id) }}"
+                >
+                  <button type="submit" class="btn-delete">
+                    Delete Call
+                  </button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div style="padding: 24px; text-align: center; color: #8B949E;">
+            No active 911 calls at the moment.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GSRP CAD – Character Detail</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---- Global Resets ---- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0D1117;
+      color: #E0E0E0;
+      overflow: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    /* ---- Top Navbar ---- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background-color: #161B22;
+      border-bottom: 1px solid #30363D;
+    }
+    .topbar .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .topbar .logo-section img {
+      width: 32px;
+      height: 32px;
+    }
+    .topbar .logo-section .title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #FFA500;
+    }
+    .topbar .logo-section .subtitle {
+      font-size: 0.85rem;
+      color: #8B949E;
+    }
+    .topbar .exit-btn {
+      padding: 6px 12px;
+      background-color: #21262D;
+      border: 1px solid #30363D;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #C9D1D9;
+      transition: background 0.2s;
+    }
+    .topbar .exit-btn:hover {
+      background-color: #2D333B;
+    }
+
+    /* ---- Tab Navigation ---- */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 12px 24px;
+      background-color: #161B22;
+      border-bottom: 1px solid #30363D;
+    }
+    .tabs .tab-item {
+      padding: 8px 16px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #8B949E;
+      transition: background 0.2s, color 0.2s;
+    }
+    .tabs .tab-item:hover {
+      background-color: #21262D;
+      color: #E0E0E0;
+    }
+    .tabs .tab-item.active {
+      background-color: #FFA500;
+      color: #161B22;
+    }
+
+    /* ---- Main Content ---- */
+    .main-content {
+      padding: 24px 24px 36px;
+      overflow-y: auto;
+      height: calc(100% - 106px); /* topbar (48px) + tabs (58px) */
+      background-color: #0D1117;
+    }
+
+    /* ---- Character Header Card ---- */
+    .character-header {
+      background-color: #161B22;
+      border: 1px solid #30363D;
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 1000px;
+      margin: 0 auto 24px;
+    }
+    .character-header .row {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .character-header .row-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .character-header .row-left .icon {
+      font-size: 1.3rem;
+      color: #FFA500;
+    }
+    .character-header .row-left .name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #FFA500;
+    }
+    .character-header .row-left .badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .character-header .row-left .rank-badge {
+      padding: 2px 8px;
+      background-color: #2080FF;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #FFFFFF;
+    }
+    .character-header .row-left .status-pill {
+      padding: 2px 8px;
+      background-color: #22B14C;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #161B22;
+    }
+
+    .character-header .row .info-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-top: 12px;
+    }
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: #A0A0A0;
+    }
+    .info-item i {
+      font-size: 1rem;
+    }
+
+    /* ---- Section Cards (Licenses, Weapons, Vehicles) ---- */
+    .section-card {
+      background-color: #161B22;
+      border: 1px solid #30363D;
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 1000px;
+      margin: 0 auto 24px;
+    }
+    .section-card .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .section-card .section-header .title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #FFA500;
+    }
+    .section-card .section-header .title i {
+      font-size: 1.1rem;
+    }
+    .section-card .section-header .btn-add {
+      padding: 6px 14px;
+      background-color: #FFA500;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #161B22;
+      transition: background 0.2s;
+    }
+    .section-card .section-header .btn-add:hover {
+      background-color: #CC8400;
+    }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .item {
+      background-color: #0D1117;
+      border: 1px solid #21262D;
+      border-radius: 6px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .item:hover {
+      background-color: #161B22;
+      border-color: #30363D;
+    }
+    .item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.9rem;
+      color: #E0E0E0;
+    }
+    .item-info .label {
+      color: #A0A0A0;
+      font-size: 0.85rem;
+    }
+    .item-info .value {
+      font-weight: 500;
+      color: #E0E0E0;
+    }
+
+    .item-extra {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .item-extra .status-pill {
+      display: inline-block;
+      padding: 4px 10px;
+      background-color: #22B14C;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #161B22;
+    }
+    .item-extra .btn-edit {
+      padding: 4px 10px;
+      background-color: #21262D;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: #C9D1D9;
+      transition: background 0.2s;
+    }
+    .item-extra .btn-edit:hover {
+      background-color: #2D333B;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <div class="topbar">
+    <div class="logo-section">
+      <img src="../static/img/3.png" alt="GSRP Logo" />
+      <div>
+        <div class="title">GSRP CAD</div>
+        <div class="subtitle">Computer Aided Dispatch</div>
+      </div>
+    </div>
+    <button class="exit-btn">⟵ Exit CAD</button>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="tabs">
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('dashboard.dashboard') }}'">
+      View Characters
+    </div>
+
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('create_character.create_character') }}'">
+      Create Character
+    </div>
+
+    <div class="tab-item active">
+      Character Detail
+    </div>
+
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('character_detail.register_weapon', character_id=character_id) }}'">
+      Register Weapon
+    </div>
+
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('character_detail.register_vehicle', character_id=character_id) }}'">
+      Register Vehicle
+    </div>
+    <div class="tab-item"
+        onclick="window.location.href='{{ url_for('create_call.create_call') }}'">
+      Create 911 Call
+    </div>
+    </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Character Header -->
+    <div class="character-header">
+      <div class="row">
+        <div class="row-left">
+          <i>👤</i>
+          <div class="name">{{ character.full_name }}</div>
+          <div class="badges">
+            <div class="rank-badge">{{ character.occupation }}</div>
+            <div class="status-pill">{{ character.status }}</div>
+          </div>
+        </div>
+        <div class="row-right"></div>
+      </div>
+      <div class="row">
+        <div class="info-items">
+          <div class="info-item">
+            <i>📅</i> <span>DOB: {{ character.dob }}</span>
+          </div>
+          <div class="info-item">
+            <i>📍</i> <span>{{ character.address }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Licenses & Permits Section -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="title">
+          <i>📝</i><span>Licenses & Permits</span>
+        </div>
+        <!-- CORRECTED: now points to add_license route -->
+        <button
+          class="btn-add"
+          onclick="window.location.href='{{ url_for('character_detail.add_license', character_id=character_id) }}'">
+          ＋ Add License
+        </button>
+      </div>
+      <div class="item-list">
+        {% for lic in licenses %}
+          <div class="item">
+            <div class="item-info">
+              <div class="label">{{ lic.type }}</div>
+              <div class="value">
+                Issued: {{ lic.issued_on }} &nbsp;|&nbsp; Expires: {{ lic.expires_on }}
+              </div>
+            </div>
+            <div class="item-extra">
+              <div class="status-pill">{{ lic.status }}</div>
+              <button class="btn-edit">Edit</button>
+            </div>
+          </div>
+        {% else %}
+          <div style="padding: 16px; color: #8B949E;">
+            No licenses or permits on file.
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Registered Weapons Section -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="title">
+          <i>🔫</i><span>Registered Weapons</span>
+        </div>
+        <!-- CORRECTED: now points to register_weapon route -->
+        <button
+          class="btn-add"
+          onclick="window.location.href='{{ url_for('character_detail.register_weapon', character_id=character_id) }}'">
+          ＋ Register Weapon
+        </button>
+      </div>
+      <div class="item-list">
+        {% for w in weapons %}
+          <div class="item">
+            <div class="item-info">
+              <div class="label">{{ w.model }} ({{ w.weapon_type }})</div>
+              <div class="value">Serial: {{ w.serial }}</div>
+            </div>
+            <div class="item-extra">
+              <div class="status-pill">{{ w.status }}</div>
+              <button class="btn-edit">Edit</button>
+            </div>
+          </div>
+        {% else %}
+          <div style="padding: 16px; color: #8B949E;">
+            No weapons registered.
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Registered Vehicles Section -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="title">
+          <i>🚗</i><span>Registered Vehicles</span>
+        </div>
+        <!-- CORRECTED: now points to register_vehicle route -->
+        <button
+          class="btn-add"
+          onclick="window.location.href='{{ url_for('character_detail.register_vehicle', character_id=character_id) }}'">
+          ＋ Register Vehicle
+        </button>
+      </div>
+      <div class="item-list">
+        {% for v in vehicles %}
+          <div class="item">
+            <div class="item-info">
+              <div class="label">{{ v.model }}</div>
+              <div class="value">
+                Reg#: {{ v.registration }} &nbsp;|&nbsp; Color: {{ v.color }}
+              </div>
+            </div>
+            <div class="item-extra">
+              <div class="status-pill">{{ v.status }}</div>
+              <button class="btn-edit">Edit</button>
+            </div>
+          </div>
+        {% else %}
+          <div style="padding: 16px; color: #8B949E;">
+            No vehicles registered.
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

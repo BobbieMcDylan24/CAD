@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GSRP CAD – Create 911 Call</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---- Global Resets ---- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0D1117;
+      color: #E0E0E0;
+      overflow: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    /* ---- Top Navbar ---- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background-color: #161B22;
+      border-bottom: 1px solid #30363D;
+    }
+    .topbar .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .topbar .logo-section img {
+      width: 32px;
+      height: 32px;
+    }
+    .topbar .logo-section .title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #FFA500;
+    }
+    .topbar .logo-section .subtitle {
+      font-size: 0.85rem;
+      color: #8B949E;
+    }
+    .topbar .exit-btn {
+      padding: 6px 12px;
+      background-color: #21262D;
+      border: 1px solid #30363D;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #C9D1D9;
+      transition: background 0.2s;
+    }
+    .topbar .exit-btn:hover {
+      background-color: #2D333B;
+    }
+
+    /* ---- Tab Navigation ---- */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 12px 24px;
+      background-color: #161B22;
+      border-bottom: 1px solid #30363D;
+    }
+    .tabs .tab-item {
+      padding: 8px 16px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #8B949E;
+      transition: background 0.2s, color 0.2s;
+    }
+    .tabs .tab-item:hover {
+      background-color: #21262D;
+      color: #E0E0E0;
+    }
+    .tabs .tab-item.active {
+      background-color: #FFA500;
+      color: #161B22;
+    }
+
+    /* ---- Main Content ---- */
+    .main-content {
+      padding: 24px 24px 36px;
+      overflow-y: auto;
+      height: calc(100% - 106px); /* topbar (48px) + tabs (58px) */
+      background-color: #0D1117;
+    }
+
+    /* ---- Flash Messages ---- */
+    .flash {
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      font-weight: 500;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .flash.error {
+      background-color: #D72C2C;
+      color: #fff;
+    }
+    .flash.success {
+      background-color: #22B14C;
+      color: #fff;
+    }
+
+    /* ---- Form Card ---- */
+    .form-card {
+      background-color: #161B22;
+      border: 1px solid #30363D;
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .form-card h2 {
+      color: #FFA500;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      color: #8B949E;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: 10px 12px;
+      background-color: #0D1117;
+      border: 1px solid #30363D;
+      border-radius: 6px;
+      color: #E0E0E0;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #FFA500;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .btn-cancel {
+      padding: 8px 16px;
+      background-color: #21262D;
+      border: 1px solid #30363D;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #C9D1D9;
+      transition: background 0.2s;
+    }
+    .btn-cancel:hover {
+      background-color: #2D333B;
+    }
+    .btn-submit {
+      padding: 8px 16px;
+      background-color: #FFA500;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #161B22;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover {
+      background-color: #CC8400;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <div class="topbar">
+    <div class="logo-section">
+      <img src="../static/img/3.png" alt="GSRP Logo" />
+      <div>
+        <div class="title">GSRP CAD</div>
+        <div class="subtitle">Computer Aided Dispatch</div>
+      </div>
+    </div>
+    <button class="exit-btn">⟵ Exit CAD</button>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="tabs">
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('dashboard.dashboard') }}'">
+      View Characters
+    </div>
+
+    <div class="tab-item"
+         onclick="window.location.href='{{ url_for('create_character.create_character') }}'">
+      Create Character
+    </div>
+
+    <div class="tab-item active">
+      Create 911 Call
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="form-card">
+      <h2>＋ Create 911 Call</h2>
+      <form method="POST" action="{{ url_for('create_call.create_call') }}">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text"
+                 id="title"
+                 name="title"
+                 placeholder="Enter call title"
+                 value="{{ title|default('', true) }}"
+                 required />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description"
+                    name="description"
+                    placeholder="Enter detailed description">{{ description|default('', true) }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="postal">Postal</label>
+          <input type="text"
+                 id="postal"
+                 name="postal"
+                 placeholder="Enter postal code or address"
+                 value="{{ postal|default('', true) }}"
+                 required />
+        </div>
+
+        <div class="form-group">
+          <label for="call_type">Call Type</label>
+          <select id="call_type" name="call_type" required>
+            <option value="" disabled {% if not call_type %}selected{% endif %}>
+              Select call type
+            </option>
+            <option value="LEO" {% if call_type == 'LEO' %}selected{% endif %}>LEO</option>
+            <option value="EMS" {% if call_type == 'EMS' %}selected{% endif %}>EMS</option>
+            <option value="Fire" {% if call_type == 'Fire' %}selected{% endif %}>Fire</option>
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button type="button"
+                  class="btn-cancel"
+                  onclick="window.location.href='{{ url_for('dashboard.dashboard') }}'">
+            Cancel
+          </button>
+          <button type="submit" class="btn-submit">Submit Call</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
