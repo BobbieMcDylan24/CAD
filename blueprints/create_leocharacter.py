@@ -70,10 +70,17 @@ def create_leo():
     guild_id = config.GUILD_ID
     
     bot_token = config.TOKEN
-    required_role = str(config.LEORole)
 
     member = get_guild_member(bot_token, guild_id, discord_user_id)
-    if not member or config.Trooper or config.Lieutenant or config.Captain or config.Commissioner or config.Major or config.Sergeant not in member.get("roles", []):
+    required_roles = [
+    config.Trooper,
+    config.Lieutenant,
+    config.Captain,
+    config.Commissioner,
+    config.Major,
+    config.Sergeant,
+    ]
+    if not member or not any(role in member.get("roles", []) for role in required_roles):
         print(member["roles"])
         return redirect(url_for('main.index'))
 

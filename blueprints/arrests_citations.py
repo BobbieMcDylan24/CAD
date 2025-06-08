@@ -58,9 +58,16 @@ def api_character_names():
     discord_user_id = user_info["id"]
     guild_id        = config.GUILD_ID
     bot_token       = config.TOKEN
-    required_role   = config.LEORole
     member = get_guild_member(bot_token, guild_id, discord_user_id)
-    if not member or required_role not in member.get("roles", []):
+    required_roles = [
+    config.Trooper,
+    config.Lieutenant,
+    config.Captain,
+    config.Commissioner,
+    config.Major,
+    config.Sergeant,
+    ]
+    if not member or not any(role in member.get("roles", []) for role in required_roles):
         return jsonify([]), 403
 
     characters = mydb['characters']
@@ -90,7 +97,15 @@ def view_arrests_citations():
     guild_id      = config.GUILD_ID
     bot_token     = config.TOKEN
     member = get_guild_member(bot_token, guild_id, discord_user_id)
-    if not member or config.Trooper or config.Lieutenant or config.Captain or config.Commissioner or config.Major or config.Sergeant not in member.get("roles", []):
+    required_roles = [
+    config.Trooper,
+    config.Lieutenant,
+    config.Captain,
+    config.Commissioner,
+    config.Major,
+    config.Sergeant,
+    ]
+    if not member or not any(role in member.get("roles", []) for role in required_roles):
         flash("You do not have permission to view arrests & citations.", "error")
         return redirect("https://discord.gg/gsrp2018")
 
@@ -144,7 +159,15 @@ def new_arrest():
     guild_id      = config.GUILD_ID
     bot_token     = config.TOKEN
     member = get_guild_member(bot_token, guild_id, discord_user_id)
-    if not member or config.Trooper or config.Lieutenant or config.Captain or config.Commissioner or config.Major or config.Sergeant not in member.get("roles", []):
+    required_roles = [
+    config.Trooper,
+    config.Lieutenant,
+    config.Captain,
+    config.Commissioner,
+    config.Major,
+    config.Sergeant,
+    ]
+    if not member or not any(role in member.get("roles", []) for role in required_roles):
         flash("You do not have permission to create an arrest report.", "error")
         return redirect(url_for("main.index"))
 
@@ -265,7 +288,15 @@ def new_citation():
     guild_id      = config.GUILD_ID
     bot_token     = config.TOKEN
     member = get_guild_member(bot_token, guild_id, discord_user_id)
-    if not member or config.Trooper or config.Lieutenant or config.Captain or config.Commissioner or config.Major or config.Sergeant not in member.get("roles", []):
+    required_roles = [
+    config.Trooper,
+    config.Lieutenant,
+    config.Captain,
+    config.Commissioner,
+    config.Major,
+    config.Sergeant,
+    ]
+    if not member or not any(role in member.get("roles", []) for role in required_roles):
         flash("You do not have permission to create a citation.", "error")
         return redirect(url_for("main.index"))
 
@@ -376,7 +407,15 @@ def new_warrant():
     guild_id      = config.GUILD_ID
     bot_token     = config.TOKEN
     member = get_guild_member(bot_token, guild_id, discord_user_id)
-    if not member or config.Trooper or config.Lieutenant or config.Captain or config.Commissioner or config.Major or config.Sergeant not in member.get("roles", []):
+    required_roles = [
+    config.Trooper,
+    config.Lieutenant,
+    config.Captain,
+    config.Commissioner,
+    config.Major,
+    config.Sergeant,
+    ]
+    if not member or not any(role in member.get("roles", []) for role in required_roles):
         flash("You do not have permission to create a warrant.", "error")
         return redirect(url_for("main.index"))
 
@@ -468,7 +507,15 @@ def new_bolo():
     guild_id      = config.GUILD_ID
     bot_token     = config.TOKEN
     member = get_guild_member(bot_token, guild_id, discord_user_id)
-    if not member or config.Trooper or config.Lieutenant or config.Captain or config.Commissioner or config.Major or config.Sergeant not in member.get("roles", []):
+    required_roles = [
+    config.Trooper,
+    config.Lieutenant,
+    config.Captain,
+    config.Commissioner,
+    config.Major,
+    config.Sergeant,
+    ]
+    if not member or not any(role in member.get("roles", []) for role in required_roles):
         flash("You do not have permission to create a BOLO.", "error")
         return redirect(url_for("main.index"))
 

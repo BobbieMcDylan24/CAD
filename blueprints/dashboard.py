@@ -39,14 +39,14 @@ def get_guild_member(bot_token, guild_id, user_id):
 def dashboard():
     if not discord_user_logged_in():
         flash("You must be logged in via Discord to view the dashboard.", "error")
-        return redirect(url_for("index.main"))
+        return redirect(url_for("main.index"))
 
     access_token = session["access_token"]
 
     user_info = get_discord_user_info(access_token)
     if not user_info:
         flash("Your Discord session has expired. Please log in again.", "error")
-        return redirect(url_for("index.main"))
+        return redirect(url_for("main.index"))
 
     discord_user_id = user_info["id"]
 
@@ -56,7 +56,7 @@ def dashboard():
     member = get_guild_member(bot_token, guild_id, discord_user_id)
     if not member:
         flash("You must be a member of the correct Discord guild to view this page.", "error")
-        return redirect(url_for("index.main"))
+        return redirect(url_for("main.index"))
     characters = mydb['characters']
     try:
         cursor = characters.find({'creator_discord_id': discord_user_id})

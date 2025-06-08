@@ -55,7 +55,15 @@ def view_calls():
     bot_token     = config.TOKEN
 
     member = get_guild_member(bot_token, guild_id, discord_user_id)
-    if not member or config.Trooper or config.Lieutenant or config.Captain or config.Commissioner or config.Major or config.Sergeant not in member.get("roles", []):
+    required_roles = [
+    config.Trooper,
+    config.Lieutenant,
+    config.Captain,
+    config.Commissioner,
+    config.Major,
+    config.Sergeant,
+    ]
+    if not member or not any(role in member.get("roles", []) for role in required_roles):
         flash("You do not have permission to view 911 calls.", "error")
         return redirect(url_for("dashboard.dashboard"))
 
@@ -105,7 +113,15 @@ def claim_call(call_id):
     bot_token     = config.TOKEN
 
     member = get_guild_member(bot_token, guild_id, discord_user_id)
-    if not member or config.Trooper or config.Lieutenant or config.Captain or config.Commissioner or config.Major or config.Sergeant not in member.get("roles", []):
+    required_roles = [
+    config.Trooper,
+    config.Lieutenant,
+    config.Captain,
+    config.Commissioner,
+    config.Major,
+    config.Sergeant,
+    ]
+    if not member or not any(role in member.get("roles", []) for role in required_roles):
         flash("You do not have permission to claim a call.", "error")
         return redirect(url_for("dashboard.dashboard"))
     try:
@@ -138,20 +154,28 @@ def claim_call(call_id):
 def delete_call(call_id):
     if "access_token" not in session or not session["access_token"]:
         flash("You must be logged in via Discord to delete a call.", "error")
-        return redirect(url_for("landing"))
+        return redirect(url_for("main.index"))
 
     access_token = session["access_token"]
     user_info = get_discord_user_info(access_token)
     if not user_info:
         flash("Discord session expired. Please log in again.", "error")
-        return redirect(url_for("landing"))
+        return redirect(url_for("main.index"))
     discord_user_id = user_info["id"]
 
     guild_id      = config.GUILD_ID
     bot_token     = config.TOKEN
 
     member = get_guild_member(bot_token, guild_id, discord_user_id)
-    if not member or config.Trooper or config.Lieutenant or config.Captain or config.Commissioner or config.Major or config.Sergeant not in member.get("roles", []):
+    required_roles = [
+    config.Trooper,
+    config.Lieutenant,
+    config.Captain,
+    config.Commissioner,
+    config.Major,
+    config.Sergeant,
+    ]
+    if not member or not any(role in member.get("roles", []) for role in required_roles):
         flash("You do not have permission to delete a call.", "error")
         return redirect(url_for("dashboard.dashboard"))
 

@@ -69,7 +69,15 @@ def database_lookup():
     guild_id  = config.GUILD_ID
     bot_token = config.TOKEN
     member = get_guild_member(bot_token, guild_id, discord_user_id)
-    if not member or config.Trooper or config.Lieutenant or config.Captain or config.Commissioner or config.Major or config.Sergeant not in member.get("roles", []):
+    required_roles = [
+    config.Trooper,
+    config.Lieutenant,
+    config.Captain,
+    config.Commissioner,
+    config.Major,
+    config.Sergeant,
+    ]
+    if not member or not any(role in member.get("roles", []) for role in required_roles):
         flash("You must be a member of the correct Discord guild to view this page.", "error")
         return redirect(url_for("index.main"))
 

@@ -66,7 +66,7 @@ def your_character():
 
     member = get_guild_member(bot_token, guild_id, discord_user_id)
     if not member or config.Trooper or config.Lieutenant or config.Captain or config.Commissioner or config.Major or config.Sergeant not in member.get("roles", []):
-        return redirect(url_for("main.main"))
+        return redirect(url_for("main.index"))
     
     leocharacters = mydb['leocharacters']
     character = leocharacters.find_one({"creator_discord_id": discord_user_id})
