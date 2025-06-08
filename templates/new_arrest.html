@@ -361,13 +361,13 @@
           <li onclick="window.location.href='{{ url_for('dashboard.dashboard') }}'">
             <i>🏠</i><span>Civilian Dashboard</span>
           </li>
-          <li class="active">
+          <li onclick="window.location.href='{{ url_for('yourcharacter.your_character') }}'">
             <i>👤</i><span>Your Character</span>
           </li>
           <li onclick="window.location.href='{{ url_for('view_calls.view_calls') }}'">
             <i>📞</i><span>Active Calls</span>
           </li>
-          <li onclick="window.location.href='{{ url_for('arrests_citations.view_arrests_citations') }}'">
+          <li class="active" onclick="window.location.href='{{ url_for('arrests_citations.view_arrests_citations') }}'">
             <i>🚨</i><span>Arrests & Citations</span>
           </li>
           <li onclick="window.location.href='{{ url_for('arrests_citations.new_warrant') }}'">
