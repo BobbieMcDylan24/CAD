@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit User</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; font-family:'Montserrat',sans-serif; display:flex; height:100vh; color:#E0E0E0; }
+    .sidebar { width:250px; background:#0F1625; padding:20px; box-shadow:4px 0 8px rgba(0,0,0,0.3); }
+    .sidebar h2 { color:#FFA500; margin-bottom:24px; }
+    .nav-button { display:block; padding:12px; color:#E0E0E0; text-decoration:none; border-radius:6px; margin-bottom:8px; }
+    .nav-button:hover, .nav-button.active { background:#FFA500; color:#161B22; }
+    .main-wrapper { flex:1; display:flex; flex-direction:column; }
+    .header { padding:16px 24px; background:#161B22; border-bottom:1px solid #30363D; }
+    .header h1 { color:#FFA500; font-size:1.25rem; }
+    .content { flex:1; overflow-y:auto; padding:24px; background:#0D1117; }
+
+    .form-container {
+      background:#161B22; padding:24px; border-radius:8px; max-width:600px; margin:0 auto;
+      box-shadow:0 4px 12px rgba(0,0,0,0.5);
+    }
+    .form-group { margin-bottom:16px; display:flex; flex-direction:column; }
+    .form-group label { font-size:0.95rem; margin-bottom:6px; color:#CCCCCC; }
+    .form-group input { padding:10px; background:#0F1625; border:1px solid #30363D; border-radius:6px; color:#E0E0E0; }
+    .form-group input:focus { outline:none; border-color:#FFA500; }
+    .submit-btn {
+      margin-top:20px; background:#FFA500; border:none; color:#161B22;
+      padding:12px; font-size:1rem; font-weight:600; border-radius:6px; cursor:pointer;
+    }
+    .submit-btn:hover { background:#CC8400; }
+    .flash-error { background:#D72C2C; padding:10px; border-radius:6px; margin-bottom:16px; color:white; }
+    .flash-success { background:#22B14C; padding:10px; border-radius:6px; margin-bottom:16px; color:white; }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>GSRP CAD Admin</h2>
+    <a href="{{ url_for('admin.list_users') }}" class="nav-button">← Back to Users</a>
+  </aside>
+  <div class="main-wrapper">
+    <div class="header"><h1>Edit User</h1></div>
+    <div class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for cat, msg in messages %}
+            <div class="flash-{{ 'error' if cat=='error' else 'success' }}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <div class="form-container">
+        <form method="POST" action="{{ url_for('admin.edit_user', user_id=user._id) }}">
+          <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+          </div>
+          <div class="form-group">
+            <label for="last_name">Last Name</label>
+            <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+          </div>
+          <div class="form-group">
+            <label for="callsign">Callsign</label>
+            <input type="text" id="callsign" name="callsign" value="{{ user.callsign }}">
+          </div>
+          <div class="form-group">
+            <label for="rank">Rank</label>
+            <input type="text" id="rank" name="rank" value="{{ user.rank }}">
+          </div>
+          <div class="form-group">
+            <label for="badge_number">Badge Number</label>
+            <input type="text" id="badge_number" name="badge_number" value="{{ user.badge_number }}">
+          </div>
+          <button type="submit" class="submit-btn">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

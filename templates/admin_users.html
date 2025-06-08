@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin – Manage Users</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Sidebar + Layout */
+    body { margin:0; font-family:'Montserrat',sans-serif; display:flex; height:100vh; color:#E0E0E0; }
+    .sidebar {
+      width:250px; background:#0F1625; padding:20px; box-shadow:4px 0 8px rgba(0,0,0,0.3);
+    }
+    .sidebar h2 { color:#FFA500; margin-bottom:24px; }
+    .nav-button { display:block; padding:12px; color:#E0E0E0; text-decoration:none; border-radius:6px; margin-bottom:8px; transition:background 0.2s; }
+    .nav-button:hover, .nav-button.active { background:#FFA500; color:#161B22; }
+    .main-wrapper { flex:1; display:flex; flex-direction:column; }
+    .header { padding:16px 24px; background:#161B22; border-bottom:1px solid #30363D; display:flex; justify-content:space-between; }
+    .header h1 { color:#FFA500; font-size:1.25rem; }
+    .content { flex:1; overflow-y:auto; padding:24px; background:#0D1117; }
+
+    /* Table */
+    .user-table { width:100%; border-collapse:collapse; margin-top:16px; }
+    .user-table th, .user-table td { padding:12px; border-bottom:1px solid #30363D; text-align:left; }
+    .user-table th { color:#A0A0A0; }
+    .btn-edit { padding:6px 12px; background:#FFA500; color:#161B22; text-decoration:none; border-radius:4px; font-size:0.9rem; font-weight:600; }
+    .btn-edit:hover { background:#CC8400; }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>GSRP CAD Admin</h2>
+    <a href="/dashboard" class="nav-button">Dashboard</a>
+    <a href="/your_character"       class="nav-button">Your LEO</a>
+    <a href="/admin/users" class="nav-button active">Manage Users</a>
+    <!-- add other nav links here -->
+  </aside>
+
+  <div class="main-wrapper">
+    <div class="header">
+      <h1>Admin: Manage Users</h1>
+    </div>
+    <div class="content">
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Callsign</th>
+            <th>Rank</th>
+            <th>Badge #</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ u.first_name }}</td>
+            <td>{{ u.last_name }}</td>
+            <td>{{ u.callsign }}</td>
+            <td>{{ u.rank }}</td>
+            <td>{{ u.badge_number }}</td>
+            <td><a href="{{ url_for('admin.edit_user', user_id=u._id) }}" class="btn-edit">Edit</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
